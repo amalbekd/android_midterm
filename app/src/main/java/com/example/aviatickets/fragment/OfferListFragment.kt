@@ -1,6 +1,8 @@
 package com.example.aviatickets.fragment
 
+import android.bluetooth.BluetoothHidDevice
 import android.os.Bundle
+import android.telecom.Call
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +10,18 @@ import android.view.ViewGroup
 import com.example.aviatickets.R
 import com.example.aviatickets.adapter.OfferListAdapter
 import com.example.aviatickets.databinding.FragmentOfferListBinding
+import com.example.aviatickets.model.entity.Offer
 import com.example.aviatickets.model.service.FakeService
+import com.example.aviatickets.model.network.ApiClient
+import com.example.aviatickets.model.network.ApiService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import okhttp3.Response
 
 
 class OfferListFragment : Fragment() {
+
+
 
     companion object {
         fun newInstance() = OfferListFragment()
@@ -59,6 +69,24 @@ class OfferListFragment : Fragment() {
                     }
                 }
             }
+        }
+    }
+
+    val client = ApiClient.instance
+    private val apiService: ApiService = ApiClient.retrofit.create(ApiService::class.java)
+
+
+
+    suspend fun fetchOffers(): List<Offer>? = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getOffers()
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                null // or handle errors as needed
+            }
+        } catch (e: Exception) {
+            null // Handle the exception e.g., no internet connection
         }
     }
 }

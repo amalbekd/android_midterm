@@ -1,5 +1,6 @@
 package com.example.aviatickets.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,11 +10,16 @@ import com.example.aviatickets.model.entity.Offer
 
 class OfferListAdapter : RecyclerView.Adapter<OfferListAdapter.ViewHolder>() {
 
+    companion object {
+        private const val OFFER_ADAPTER_TAG = "OfferAdapter"
+    }
+
     private val items: ArrayList<Offer> = arrayListOf()
 
     fun setItems(offerList: List<Offer>) {
         items.clear()
         items.addAll(offerList)
+
         notifyDataSetChanged()
 
         /**
@@ -22,6 +28,7 @@ class OfferListAdapter : RecyclerView.Adapter<OfferListAdapter.ViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        Log.d(OFFER_ADAPTER_TAG, "onCreateViewHolder")
         return ViewHolder(
             ItemOfferBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -31,11 +38,10 @@ class OfferListAdapter : RecyclerView.Adapter<OfferListAdapter.ViewHolder>() {
         )
     }
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
+    override fun getItemCount() = items.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        Log.d(OFFER_ADAPTER_TAG, "onBindViewHolder: $position")
         holder.bind(items[position])
     }
 
@@ -63,6 +69,8 @@ class OfferListAdapter : RecyclerView.Adapter<OfferListAdapter.ViewHolder>() {
                 )
                 direct.text = context.getString(R.string.direct)
                 price.text = context.getString(R.string.price_fmt, offer.price.toString())
+
+                
             }
         }
 
